@@ -2,12 +2,15 @@ package com.projetospringmicro.usuario.business;
 
 import com.projetospringmicro.usuario.business.converter.UsuarioConverter;
 import com.projetospringmicro.usuario.business.dto.EnderecoDTO;
+import com.projetospringmicro.usuario.business.dto.TelefoneDTO;
 import com.projetospringmicro.usuario.business.dto.UsuarioDTO;
 import com.projetospringmicro.usuario.infrastructure.entity.Endereco;
+import com.projetospringmicro.usuario.infrastructure.entity.Telefone;
 import com.projetospringmicro.usuario.infrastructure.entity.Usuario;
 import com.projetospringmicro.usuario.infrastructure.exceptions.ConflictException;
 import com.projetospringmicro.usuario.infrastructure.exceptions.ResourceNotFoundException;
 import com.projetospringmicro.usuario.infrastructure.repository.EnderecoRepository;
+import com.projetospringmicro.usuario.infrastructure.repository.TelefoneRepository;
 import com.projetospringmicro.usuario.infrastructure.repository.UsuarioRepository;
 import com.projetospringmicro.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final EnderecoRepository enderecoRepository;
+    private final TelefoneRepository telefoneRepository;
     private final UsuarioConverter usuarioConverter;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -76,4 +80,10 @@ public class UsuarioService {
         return usuarioConverter.paraEnderecoDTO(enderecoRepository.save(endereco))  ;
     }
 
+    public TelefoneDTO atualizarTelefone(Long id, TelefoneDTO telefoneDTO){
+        Telefone telefone = telefoneRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("telefone não encotrado"));
+        telefone = usuarioConverter.updateTelefone(telefoneDTO, telefone);
+
+        return usuarioConverter.paraTelefoneDTO(telefoneRepository.save(telefone));
+    }
 }
