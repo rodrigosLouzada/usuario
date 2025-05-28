@@ -51,14 +51,18 @@ public class UsuarioService {
     }
 
 
-    public Usuario buscarUsuarioPorEmail(String email){
-        return usuarioRepository.findByEmail(email).orElseThrow(
-                () -> new ResourceNotFoundException("Email Não Encontrado " + email));
+
+    public UsuarioDTO buscarUsuarioPorEmail(String email){
+        return usuarioConverter.paraUsuarioDTO(usuarioRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("Email Não Encontrado " + email)));
     }
+
+
 
     public void deletaUsuarioPorEmail(String email){
         usuarioRepository.deleteByEmail(email);
     }
+
 
     public UsuarioDTO atualizarDadosUsuario(String token,UsuarioDTO dto){
         String email = jwtUtil.extractUsername(token.substring(7));
